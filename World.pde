@@ -325,6 +325,29 @@ class Player {
       dy += vel_y;
     //
       jumped = true;
+      for(Platform platform: world.platforms) {
+        Rect tempr;
+        tempr = new Rect(r.x+dx, r.y, r.w, r.h);
+        if (platform.r.isCollide(tempr)) {
+          dx = 0;
+        }
+        tempr = new Rect(r.x, r.y+dy, r.w, r.h);
+        if (platform.r.isCollide(tempr)) {
+          if (abs((r.y+dy)-(platform.r.y+platform.r.h)) < 20) {
+            dy = (platform.r.y+platform.r.h) - r.y;
+            vel_y = 0;
+          }
+          if (abs((r.y+r.h+dy)-platform.r.y) < 20) {
+            dy = 0;
+            r.y = platform.r.y-r.h; 
+            jumped = false;
+          }
+          if (platform.move_x != 0) {
+            //r.x += platform.direction;
+            dx += platform.direction;
+          }
+        }
+      }
       for(Tile tile : world.tiles) {
         Rect tempr;
         tempr = new Rect(r.x+dx, r.y, r.w, r.h);
@@ -368,28 +391,7 @@ class Player {
           score += 1;
         }
       }
-      for(Platform platform: world.platforms) {
-        Rect tempr;
-        tempr = new Rect(r.x+dx, r.y, r.w, r.h);
-        if (platform.r.isCollide(tempr)) {
-          dx = 0;
-        }
-        tempr = new Rect(r.x, r.y+dy, r.w, r.h);
-        if (platform.r.isCollide(tempr)) {
-          if (abs((r.y+dy)-(platform.r.y+platform.r.h)) < 20) {
-            dy = (platform.r.y+platform.r.h) - r.y;
-            vel_y = 0;
-          }
-          if (abs((r.y+r.h+dy)-platform.r.y) < 20) {
-            dy = 0;
-            r.y = platform.r.y-r.h-1; 
-            jumped = false;
-          }
-          if (platform.move_x != 0) {
-            r.x += platform.direction;
-          }
-        }
-      }
+
     } else {
       image = imgGhost;
       r.w = image.width;
